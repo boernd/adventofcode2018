@@ -15,7 +15,7 @@ defmodule Day1FirstTest do
 
   import Day1First
 
-  test "frequency changes" do
+  test "final frequency" do
     assert run("""
       -1
       +3

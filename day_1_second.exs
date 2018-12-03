@@ -1,28 +1,35 @@
-# Run it with: elixir day_1_first.exs
+# Run it with: elixir day_1_second.exs
 # https://adventofcode.com/2018/day/1
 defmodule Day1Second do
   def run(input) do
     input
     |> String.split("\n", trim: true)
-    |> Enum.reduce(0, fn (x, acc) -> String.to_integer(x) + acc end)
+    |> Stream.cycle()
+    |> Enum.reduce_while({0, []}, fn x, {current_frequency, seen_frequencies} ->
+      new_frequency = current_frequency + String.to_integer(x)
+      if new_frequency in seen_frequencies do
+        {:halt, new_frequency}
+      else
+        {:cont, {new_frequency, [new_frequency | seen_frequencies]}}
+      end
+    end)
   end
 end
 
 ExUnit.start()
 
-defmodule Day1FirstTest do
+defmodule Day1SecondTest do
   use ExUnit.Case
 
-  import Day1First
+  import Day1Second
 
-  test "frequency changes" do
+  test "first frequency seen twice" do
     assert run("""
-      -1
-      +3
+      +7
+      +7
       -2
-      +100
-      """) == 100
-    assert run("\n-1\n+3\n-2\n+100") == 100
-    assert run("\n-1\n+3\n-2\n+100\n") == 100
+      -7
+      -4
+      """) == 14
   end
 end
